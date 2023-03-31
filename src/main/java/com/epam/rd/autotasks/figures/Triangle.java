@@ -1,7 +1,6 @@
 package com.epam.rd.autotasks.figures;
 import java.util.ArrayList;
 
-import static java.lang.Math.*;
 class Triangle extends Figure {
     Point a, b,c;
 
@@ -26,15 +25,7 @@ class Triangle extends Figure {
 
         return doublesEqualWithinDelta(aSideSlope,bSideSlope);
     }
-    public double area(Point a, Point b, Point c) {
-        double aSide = sqrt( pow ((b.getX() - a.getX()),2) + pow( (b.getY() - a.getY()),2 ) );
-        double bSide = sqrt( pow ((c.getX() - b.getX()),2) + pow( (c.getY() - b.getY()),2 ) );
-        double cSide = sqrt( pow ((a.getX() - c.getX()),2) + pow( (a.getY() - c.getY()),2 ) );
 
-        double semiP = (aSide+bSide+cSide)/2;
-        double answer = sqrt(semiP* (semiP-aSide)*(semiP-bSide)*(semiP-cSide));
-        return answer;
-    }
 
     @Override
     public Point centroid() {
