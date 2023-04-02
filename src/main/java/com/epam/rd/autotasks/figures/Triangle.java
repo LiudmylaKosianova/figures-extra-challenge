@@ -20,13 +20,7 @@ class Triangle extends Figure {
         double delta = 0.0001;
         return Math.abs(first - second) < delta;
     }
-    public boolean sameSlope(Point a, Point b, Point c){
-       if (doublesEqualWithinDelta(a.getX(),b.getX()) && doublesEqualWithinDelta(a.getX(),c.getX())){return true;}
-        double aSideSlope = (a.getY()-b.getY()) / (a.getX()-b.getX());
-        double bSideSlope = (b.getY()-c.getY()) / (b.getX()-c.getX());
 
-        return doublesEqualWithinDelta(aSideSlope,bSideSlope);
-    }
 
     public boolean areaIsZero (Point a, Point b, Point c){
         if (doublesEqualWithinDelta(a.getX(),b.getX()) && doublesEqualWithinDelta(a.getX(),c.getX())){return true;}

@@ -22,7 +22,7 @@ class Quadrilateral extends Figure {
             throw new IllegalArgumentException();
         }
 
-        if(isDegenerative(a,b,c,d)){
+        if(isDegenerative(a,b,c,d) || !isPlain(a,b,c,d)){
             throw new IllegalArgumentException();
         }
 
@@ -33,7 +33,19 @@ class Quadrilateral extends Figure {
         this.figureType = "quadrilateral";
     }
 
+    public String pointsToString() {
+        return a.toString()+b.toString()+c.toString()+d.toString();
+    }
 
+    /**
+     * @return
+     *         * Format: `Quadrilateral[(a.x,a.y)(b.x,b.y)(c.x,c.y)(d.x, d.y)]`
+     *         * Example: `Quadrilateral[(0.0,0.0)(0.0,7.1)(7.0,7.0)(7.0,0.0)]`
+     */
+    @Override
+    public String toString() {
+        return "Quadrilateral["+pointsToString()+"]";
+    }
 
 
     /**
@@ -71,27 +83,61 @@ class Quadrilateral extends Figure {
         }
     }
 
+    protected Point getK (Point a, Point b, Point c, Point d){
+        double slopeAC = (a.getY() - c.getY()) / (a.getX() - c.getX());
+        double slopeBD = (b.getY() - d.getY()) / (b.getX() - d.getX());
+
+        if (doublesEqualWithinDelta(slopeAC,slopeBD)){
+            return null;
+        }
+
+        double x1 = a.getX();
+        double x2 = c.getX();
+        double y1 = a.getY();
+        double y2 = c.getY();
+
+        double x3 = b.getX();
+        double x4 = d.getX();
+        double y3 = b.getY();
+        double y4 = d.getY();
+
+        double devisor = ( (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4) );
 
 
+        double t = ( (x1 - x3)*(y3-y4) - (y1 - y3)*(x3 - x4) ) / devisor;
+        double u = ( (x1 - x3)*(y1-y2) - (y1 - y3)*(x1-x2) ) / devisor;
 
-    public boolean sameSlope(Point a, Point b, Point c){
-        if (doublesEqualWithinDelta(a.getX(),b.getX())){return true;}
-        double aSideSlope = (a.getY()-b.getY()) / (a.getX()-b.getX());
-        double bSideSlope = (b.getY()-c.getY()) / (b.getX()-c.getX());
+        if ((t < 0 || t > 1) || (u < 0 || u > 1)) {
+            return null;
+        }
 
-        return doublesEqualWithinDelta(aSideSlope,bSideSlope);
+        double interX = x1 + t*(x2-x1);
+        double interY = y1 + t*(y2-y1);
+        return new Point(interX, interY);
+    }
+    protected boolean isPlain(Point a, Point b, Point c, Point d){
+        return getK(a,b,c,d)!=null;
     }
 
-    @Override
-    public Point centroid() {
+
+    public Point centroidFirstTry() {
         double centX = ( a.getX()+b.getX()+c.getX()+d.getX() ) / 4;
         double centY = ( a.getY()+b.getY()+c.getY()+d.getY() ) / 4;
         return new Point(centX,centY);
     }
+@Override
+    public Point centroid() {
+        //find centroids of four triangles
+        Point centr1 = new Triangle(a,b,d).centroid();
+        Point centr2 = new Triangle(d,b,c).centroid();
+        Point centr3 = new Triangle(a,b,c).centroid();
+        Point centr4 = new Triangle(d,a,c).centroid();
 
-    public Point centroid2() {
+        //find the crosspoint
+        Point realCentr = getK(centr1,centr3,centr2,centr4);
 
-        return null;
+
+        return realCentr;
     }
     protected boolean sameVertices(Quadrilateral figure){
         ArrayList<Point> snowdrops = new ArrayList<>();
