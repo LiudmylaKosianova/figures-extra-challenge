@@ -22,11 +22,7 @@ class Quadrilateral extends Figure {
             throw new IllegalArgumentException();
         }
 
-        //get the point of intersection of two diagonals
-        Point k = getK(a,b,c,d);
-        if (k==null){throw new IllegalArgumentException();}
-
-        if(sameSlope(k,a,b)|| sameSlope(k,b,c)|| sameSlope(k,c,d)|| sameSlope(k,d,a)){
+        if(isDegenerative(a,b,c,d)){
             throw new IllegalArgumentException();
         }
 
@@ -36,6 +32,7 @@ class Quadrilateral extends Figure {
         this.d = d;
         this.figureType = "quadrilateral";
     }
+
 
 
 
@@ -61,44 +58,21 @@ class Quadrilateral extends Figure {
 
     }
 
-    /**
-     * @param a,b,c,d are Points
-     * @return point of intersection of ac and bd segments
-     * return null if there is no such point
-     */
-    protected Point getK(Point a, Point b, Point c, Point d){
-        double slopeAC = (a.getY() - c.getY()) / (a.getX() - c.getX());
-        double slopeBD = (b.getY() - d.getY()) / (b.getX() - d.getX());
+    protected boolean isDegenerative(Point a, Point b, Point c, Point d) {
+        try {
+            Triangle one = new Triangle(a, b, c);
+            Triangle two = new Triangle(a, c, d);
+            Triangle three = new Triangle(a, b, d);
+            Triangle four = new Triangle(c, b, d);
+            return false;
 
-        if (doublesEqualWithinDelta(slopeAC,slopeBD)){
-            return null;
+        } catch (IllegalArgumentException ex) {
+            return true;
         }
-
-        double x1 = a.getX();
-        double x2 = c.getX();
-        double y1 = a.getY();
-        double y2 = c.getY();
-
-        double x3 = b.getX();
-        double x4 = d.getX();
-        double y3 = b.getY();
-        double y4 = d.getY();
-
-        double devisor = ( (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4) );
-
-
-        double t = ( (x1 - x3)*(y3-y4) - (y1 - y3)*(x3 - x4) ) / devisor;
-        double u = ( (x1 - x3)*(y1-y2) - (y1 - y3)*(x1-x2) ) / devisor;
-
-        if ((t < 0 || t > 1) || (u < 0 || u > 1)) {
-            return null;
-        }
-
-        double interX = x1 + t*(x2-x1);
-        double interY = y1 + t*(y2-y1);
-        return new Point(interX, interY);
-
     }
+
+
+
 
     public boolean sameSlope(Point a, Point b, Point c){
         if (doublesEqualWithinDelta(a.getX(),b.getX())){return true;}
@@ -113,6 +87,11 @@ class Quadrilateral extends Figure {
         double centX = ( a.getX()+b.getX()+c.getX()+d.getX() ) / 4;
         double centY = ( a.getY()+b.getY()+c.getY()+d.getY() ) / 4;
         return new Point(centX,centY);
+    }
+
+    public Point centroid2() {
+
+        return null;
     }
     protected boolean sameVertices(Quadrilateral figure){
         ArrayList<Point> snowdrops = new ArrayList<>();

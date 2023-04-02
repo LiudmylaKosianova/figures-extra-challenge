@@ -1,29 +1,42 @@
 package com.epam.rd.autotasks.figures;
 import java.util.ArrayList;
+import static java.lang.Math.*;
 
 class Triangle extends Figure {
     Point a, b,c;
 
+
     public Triangle(Point a, Point b, Point c){
-        if( a==null || b==null|| c==null|| sameSlope(a,b,c) ){
+        if( a==null || b==null|| c==null|| areaIsZero(a,b,c) ){
             throw new IllegalArgumentException();
         }
         this.a = a;
         this.b = b;
         this.c = c;
         this.figureType = "triangle";
+
     }
     protected boolean doublesEqualWithinDelta (double first, double second){
         double delta = 0.0001;
         return Math.abs(first - second) < delta;
     }
     public boolean sameSlope(Point a, Point b, Point c){
-        if (doublesEqualWithinDelta(a.getX(),b.getX())){return true;}
+       if (doublesEqualWithinDelta(a.getX(),b.getX()) && doublesEqualWithinDelta(a.getX(),c.getX())){return true;}
         double aSideSlope = (a.getY()-b.getY()) / (a.getX()-b.getX());
         double bSideSlope = (b.getY()-c.getY()) / (b.getX()-c.getX());
 
-
         return doublesEqualWithinDelta(aSideSlope,bSideSlope);
+    }
+
+    public boolean areaIsZero (Point a, Point b, Point c){
+        if (doublesEqualWithinDelta(a.getX(),b.getX()) && doublesEqualWithinDelta(a.getX(),c.getX())){return true;}
+        double aSide = sqrt( pow ((b.getX() - a.getX()),2) + pow( (b.getY() - a.getY()),2 ) );
+        double bSide = sqrt( pow ((c.getX() - b.getX()),2) + pow( (c.getY() - b.getY()),2 ) );
+        double cSide = sqrt( pow ((a.getX() - c.getX()),2) + pow( (a.getY() - c.getY()),2 ) );
+
+        double semiP = (aSide+bSide+cSide)/2;
+        double area = sqrt(semiP* (semiP-aSide)*(semiP-bSide)*(semiP-cSide));
+        return doublesEqualWithinDelta(area,0);
     }
 
 
